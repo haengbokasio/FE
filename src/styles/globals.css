@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+/* Reset and base styles */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #242424;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile-first responsive layout */
+#__next {
+  width: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+}
+
+@media (min-width: 375px) {
+  #__next {
+    max-width: 375px;
+    margin: 0 auto;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+      0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  @media (min-width: 375px) {
+    #__next {
+      box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.05),
+        0 2px 4px -1px rgba(255, 255, 255, 0.025);
+    }
+  }
+}
+
+/* Touch optimization */
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"] {
+  min-height: 44px;
+  min-width: 44px;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+button:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
+/* Card/Container styles */
+.card {
+  padding: 1.5rem;
+  max-width: 320px;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  background: var(--background);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    box-shadow: 0 1px 3px 0 rgba(255, 255, 255, 0.1),
+      0 1px 2px 0 rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* Hover effects for non-touch devices */
+@media (hover: hover) {
+  button:hover,
+  [role="button"]:hover {
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+  }
+}
