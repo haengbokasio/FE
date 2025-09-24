@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: goormthon-6
 
 resources:
+  - namespace.yaml
   - frontend.yaml
   - ingress.yaml
 

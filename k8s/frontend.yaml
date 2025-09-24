@@ -25,8 +25,11 @@ spec:
           readOnly: true
       volumes:
       - name: config-volume
-        configMap:
-          name: frontend-config.json
+        cconfigMap:
+            name: frontend-config
+            items:
+              - key: config.json
+                path: frontend-config.json
 ---
 apiVersion: v1
 kind: Service
