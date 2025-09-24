@@ -12,6 +12,8 @@ spec:
       labels:
         app: frontend
     spec:
+      imagePullSecrets:
+        - name: ecr-cred
       containers:
       - name: frontend
         image: 837126493345.dkr.ecr.ap-northeast-2.amazonaws.com/goormthon-6/frontend:build-23
