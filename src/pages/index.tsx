@@ -1,11 +1,7 @@
-import { Button, VStack } from "@vapor-ui/core";
+import { Button } from "@vapor-ui/core";
 import { useRouter } from "next/router";
-import { Geist } from "next/font/google";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import Image from "next/image";
+import KakaoLogin from "@/features/login/KakaoLogin";
 
 export default function SplashScreen() {
   const router = useRouter();
@@ -15,31 +11,45 @@ export default function SplashScreen() {
   };
 
   return (
-    <div className={`${geistSans.className} min-h-screen`}>
-      <div className="flex flex-col items-center justify-center min-h-screen p-8">
-        <VStack className="items-center gap-12 max-w-sm w-full">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-foreground mb-4">
-              우리 서비스 이름~
+    <div className="min-h-screen relative overflow-hidden">
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 relative z-10">
+        <div className="flex flex-col items-center max-w-sm w-full">
+          {/* 상단 제목 영역 */}
+          <div className="text-center mb-10 mt-[94px]">
+            <p className="text-sm font-semibold text-black mb-2.5 leading-[16.7px]">
+              제주도 소상 공인 멘토링 플랫폼
+            </p>
+            <h1
+              className="text-[40px] font-semibold text-black leading-[42.4px]"
+              style={{ fontFamily: "Hakgyoansim Dunggeunmiso OTF, sans-serif" }}
+            >
+              장사살랑
             </h1>
           </div>
 
-          {/* 일러스트 또는 이미지 영역 */}
-          <div className="w-48 h-48 bg-primary/10 rounded-full flex items-center justify-center">
-            <div className="text-6xl">😊</div>
+          {/* 중앙 일러스트 */}
+          <div className="">
+            <Image
+              src="/mainIcons.svg"
+              alt="main illustration"
+              width={288}
+              height={252}
+              className="w-[288px] h-[252px]"
+            />
           </div>
 
-          <VStack className="gap-4 w-full">
+          {/* 하단 버튼 */}
+          <div className="w-full px-4 pb-[30px]">
+            <KakaoLogin />
             <Button
               onClick={handleGetStarted}
-              variant="outline"
               size="lg"
-              className="w-full"
+              className="w-full h-12 bg-[#FF782A] hover:bg-[#FF782A]/90 text-white font-medium rounded-xl"
             >
               시작하기
             </Button>
-          </VStack>
-        </VStack>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -26,9 +26,10 @@ interface MentorFormData {
 
 interface MentorForm2Props {
   onNext: () => void;
+  onBack: () => void;
 }
 
-const MentorForm2 = ({ onNext }: MentorForm2Props) => {
+const MentorForm2 = ({ onNext, onBack }: MentorForm2Props) => {
   const {
     control,
     handleSubmit,
@@ -98,7 +99,7 @@ const MentorForm2 = ({ onNext }: MentorForm2Props) => {
     setValue("detailedBusinessType", "");
   };
 
-  const onSubmit = (data: MentorFormData) => {
+  const onSubmit = async (data: MentorFormData) => {
     const phoneNumber = sessionStorage.getItem("phoneNumber") || "";
 
     const formDataWithPhone = {
@@ -107,40 +108,29 @@ const MentorForm2 = ({ onNext }: MentorForm2Props) => {
     };
 
     console.log("멘토 폼 데이터:", formDataWithPhone);
-    aiAnalyzedReport(formDataWithPhone);
+
+    // 로딩 상태를 sessionStorage에 저장
+    sessionStorage.setItem("aiAnalysisStatus", "loading");
+    sessionStorage.setItem("mentorFormData", JSON.stringify(formDataWithPhone));
+
+    // 즉시 다음 화면으로 이동
     onNext();
-  };
 
-  const isFormComplete = () => {
-    const formData = watch();
-
-    console.log("폼 완성도 체크:", {
-      businessType: formData.businessType,
-      detailedBusinessType: formData.detailedBusinessType,
-      operatingPeriod: formData.operatingPeriod,
-      revenueAvg: formData.revenueAvg,
-      salesAvg: formData.salesAvg,
-      storeLocation: formData.storeLocation,
-      representativeProduct: formData.representativeProduct,
-      mainCustomers: formData.mainCustomers,
-      marketingMethod: formData.marketingMethod,
-    });
-
-    return (
-      formData.businessType &&
-      formData.detailedBusinessType &&
-      formData.operatingPeriod >= 0 &&
-      formData.revenueAvg >= 0 &&
-      formData.salesAvg >= 0 &&
-      formData.storeLocation &&
-      formData.representativeProduct &&
-      formData.mainCustomers.length > 0 &&
-      formData.marketingMethod.length > 0
-    );
+    // 백그라운드에서 AI 분석 요청
+    try {
+      const result = await aiAnalyzedReport(formDataWithPhone);
+      // 결과를 sessionStorage에 저장
+      sessionStorage.setItem("aiAnalysisStatus", "completed");
+      sessionStorage.setItem("aiAnalysisResult", JSON.stringify(result));
+    } catch (error) {
+      console.error("AI 분석 오류:", error);
+      sessionStorage.setItem("aiAnalysisStatus", "error");
+      sessionStorage.setItem("aiAnalysisError", JSON.stringify(error));
+    }
   };
 
   return (
-    <div className="pt-[53px] pb-[100px]">
+    <div className="pt-[49px] pb-[100px]">
       <div>
         <h2 className="text-2xl font-semibold text-black leading-[32px] -tracking-[0.24px] mb-1">
           세부 정보를 입력해주세요
@@ -319,20 +309,25 @@ const MentorForm2 = ({ onNext }: MentorForm2Props) => {
         </VStack>
       </form>
 
-      <div className="w-full flex absolute bottom-0 left-0 right-0 p-4 pb-8 bg-white border-t border-gray-100">
-        <Button
-          type="submit"
-          onClick={handleSubmit(onSubmit)}
-          className="w-full h-12 text-white font-medium rounded-xl transition-all duration-200"
-          style={{
-            backgroundColor: !isFormComplete() ? "#ECECEC" : "#FF782A",
-            color: !isFormComplete() ? "#393939" : "#FFFFFF",
-          }}
-          size="lg"
-          disabled={!isFormComplete()}
-        >
-          완료하기
-        </Button>
+      <div className="w-full flex absolute bottom-0 left-0 right-0 p-4 pb-8">
+        <div className="flex justify-between items-center gap-[6px] w-full max-w-[343px] mx-auto">
+          <Button
+            onClick={onBack}
+            className="w-[124px] h-12 bg-[#393939] hover:bg-[#393939]/90 text-white font-medium rounded-xl transition-all duration-200"
+            size="lg"
+          >
+            뒤로가기
+          </Button>
+          <Button
+            type="submit"
+            onClick={handleSubmit(onSubmit)}
+            className="w-[213px] h-12 bg-[#ff782a] hover:bg-[#ff782a]/90 text-white font-medium rounded-xl transition-all duration-200"
+            color="primary"
+            size="lg"
+          >
+            완료하기
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -496,8 +491,7 @@ const SliderSection = ({
   unit = "",
 }: SliderSectionProps) => {
   return (
-    <div className="bg-white rounded-lg border-gray-200">
-      {/* 헤더 */}
+    <div className="rounded-lg border-gray-200">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h3 className="text-lg font-bold text-[#262626] leading-[26px] mb-1">

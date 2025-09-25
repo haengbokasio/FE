@@ -32,7 +32,7 @@ body {
   padding: 0;
   width: 100%;
   overflow-x: hidden;
-  background: #f5f5f5; /* 외부 영역 연한 회색 */
+  background: #f9fafb;
   color: var(--foreground);
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-synthesis: none;
@@ -47,8 +47,8 @@ body {
   max-width: 375px; /* 모바일 앱 너비 */
   min-height: 100vh;
   margin: 0 auto;
-  background: var(--background); /* 앱 영역은 테마 배경색 */
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 앱 그림자 효과 */
+  /* background: var(--background); 앱 영역은 테마 배경색 */
+  /* box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); 앱 그림자 효과 */
 }
 
 @media (prefers-color-scheme: dark) {
