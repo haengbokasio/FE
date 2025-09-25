@@ -6,27 +6,44 @@ interface MentorWaitingCardProps {
   name: string
   specialty: string
   avatar: string
-  onAccept: () => void  
+  onAccept: () => void
   onReject: () => void
 }
 
 export function MentorWaitingCard({ name, specialty, avatar, onAccept, onReject }: MentorWaitingCardProps) {
   return (
-    <div className="flex items-center justify-between p-4 bg-white rounded-lg">
-      <div className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-full overflow-hidden">
+    <div className="flex items-center justify-between bg-white rounded-2xl border-0 p-4">
+      <div className="flex items-center gap-6">
+        <div className="w-[49px] h-[49px] rounded-full overflow-hidden bg-gray-200">
           <img src={avatar || "/placeholder.svg"} alt={name} className="w-full h-full object-cover" />
         </div>
-        <div>
-          <h4 className="font-medium text-gray-900">{name}</h4>
-          <p className="text-sm text-gray-600">{specialty}</p>
+        <div className="flex flex-col gap-1">
+          <h4 className="text-[16px] leading-6 font-semibold text-black">{name}</h4>
+          <p className="text-[14px] leading-5 text-black/80 tracking-[0.01em]">{specialty}</p>
         </div>
       </div>
+
       <div className="flex gap-2">
-        <Button onClick={onReject} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm">
+        <Button 
+          variant="fill" 
+          size="md"
+          className="rounded-[300px]"
+          style={{ 
+            backgroundColor: '#ECECEC', 
+            color: '#767676'
+          }}
+        >
           거절
         </Button>
-        <Button onClick={onAccept} className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm">
+        <Button 
+          variant="fill" 
+          size="md"
+          className="rounded-[300px]"
+          style={{ 
+            backgroundColor: '#8774FF', 
+            color: 'white'
+          }}
+        >
           수락
         </Button>
       </div>

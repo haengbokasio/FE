@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ProfileAvatar } from "./profile-avatar"
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 interface MentorApplication {
   id: string
@@ -41,7 +41,7 @@ export function MentorApplicationList({ applications }: MentorApplicationListPro
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md border-0 shadow-[0_0_18px_11px_rgba(0,0,0,0.05)]">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-semibold">멘토 신청 현황</CardTitle>
       </CardHeader>
@@ -49,12 +49,10 @@ export function MentorApplicationList({ applications }: MentorApplicationListPro
         {applications.map((application) => (
           <div key={application.id} className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <ProfileAvatar
-                src={application.avatar}
-                alt={`${application.name} 프로필`}
-                fallback={application.name.charAt(0)}
-                size="sm"
-              />
+              <Avatar className="w-10 h-10">
+                <AvatarImage src={application.avatar || "/placeholder.svg"} alt={application.name} />
+                <AvatarFallback>{application.name.charAt(0)}</AvatarFallback>
+              </Avatar>
               <div>
                 <h4 className="font-medium text-sm">{application.name}</h4>
                 <p className="text-xs text-muted-foreground">{application.job}</p>
@@ -69,3 +67,5 @@ export function MentorApplicationList({ applications }: MentorApplicationListPro
     </Card>
   )
 }
+
+

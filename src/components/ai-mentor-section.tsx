@@ -1,30 +1,10 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 const mentors = [
-  {
-    id: "1",
-    name: "이수아",
-    job: "카페 · 애완점",
-    avatar: "/korean-woman-cafe-owner.jpg",
-  },
-  {
-    id: "2",
-    name: "윤서우",
-    job: "카페 · 애완점",
-    avatar: "/korean-man-cafe-owner.jpg",
-  },
-  {
-    id: "3",
-    name: "김민재",
-    job: "카페 · 애완점",
-    avatar: "/korean-man-restaurant-owner.jpg",
-  },
-  {
-    id: "4",
-    name: "한지민",
-    job: "카페 · 애완점",
-    avatar: "/korean-woman-business-owner.jpg",
-  },
+  { id: "1", name: "이수아", job: "카페 · 애월읍", avatar: "/korean-woman-cafe-owner.jpg" },
+  { id: "2", name: "윤서우", job: "카페 · 애월읍", avatar: "/korean-man-cafe-owner.jpg" },
+  { id: "3", name: "김민재", job: "카페 · 애월읍", avatar: "/korean-man-restaurant-owner.jpg" },
+  { id: "4", name: "한지민", job: "카페 · 애월읍", avatar: "/korean-woman-business-owner.jpg" },
 ]
 
 export function AiMentorSection() {
@@ -49,3 +29,5 @@ export function AiMentorSection() {
     </div>
   )
 }
+
+
