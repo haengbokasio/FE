@@ -17,7 +17,7 @@ export function MentorWaitingCard({ name, specialty, avatar, onAccept, onReject 
         <div className="w-[49px] h-[49px] rounded-full overflow-hidden bg-gray-200">
           <img src={avatar || "/placeholder.svg"} alt={name} className="w-full h-full object-cover" />
         </div>
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 items-start">
           <h4 className="text-[16px] leading-6 font-semibold text-black">{name}</h4>
           <p className="text-[14px] leading-5 text-black/80 tracking-[0.01em]">{specialty}</p>
         </div>
@@ -27,7 +27,6 @@ export function MentorWaitingCard({ name, specialty, avatar, onAccept, onReject 
         <Button 
           variant="fill" 
           size="md"
-          className="rounded-[300px]"
           style={{ 
             backgroundColor: '#ECECEC', 
             color: '#767676'
@@ -38,7 +37,7 @@ export function MentorWaitingCard({ name, specialty, avatar, onAccept, onReject 
         <Button 
           variant="fill" 
           size="md"
-          className="rounded-[300px]"
+
           style={{ 
             backgroundColor: '#8774FF', 
             color: 'white'

@@ -6,16 +6,16 @@ import { Button } from "@vapor-ui/core"; // vapor 버튼
 
 export function MentorStartCard() {
   return (
-    <Card className="rounded-2xl shadow-[0_0_18px_11px_rgba(0,0,0,0.05)] border-0">
+    <Card className="rounded-2xl shadow-[0_0_18px_11px_rgba(0,0,0,0.05)] border-0 p-6">
       <CardHeader className="py-6 px-2">
         <CardTitle className="text-[18px] leading-[26px] font-semibold">
           멘토링을 시작할 수 있어요
         </CardTitle>
       </CardHeader>
 
-      <CardContent className="py-0 px-2">
+      <CardContent className="p-4">
         {/* 카드 내부 요소 간격 16px */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 p-6">
           {/* 예시: 안내 텍스트 */}
           <p className="text-[14px] leading-5 text-black/80">
             지금 신청을 수락하면 프로필이 노출되고, 멘티가 바로 연락할 수 있어요.

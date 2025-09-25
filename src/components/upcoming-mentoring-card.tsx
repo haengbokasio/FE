@@ -19,9 +19,9 @@ export function UpcomingMentoringCard({
   // ✅ 부모 카드가 여백/간격을 관리할 때: 'inline' 행만 렌더
   if (variant === "inline") {
     return (
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-start gap-3 min-w-0"> {/* ← 여기 수정 */}
-          <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-gray-200">
+      <div className="flex items-center justify-between border-0">
+        <div className="flex items-start min-w-0"> {/* ← 여기 수정 */}
+          <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
             <img src={avatar || "/placeholder.svg"} alt={name} className="w-full h-full object-cover" />
           </div>
           <div className="flex-1 min-w-0">
@@ -36,11 +36,11 @@ export function UpcomingMentoringCard({
 
   // 기존처럼 단독 카드로 쓸 때(다른 화면 재사용 용도)
   return (
-    <Card className="bg-white rounded-2xl shadow-sm border-0 shadow-[0_0_18px_11px_rgba(0,0,0,0.05)]">
-      <CardContent className="p-6">
+    <Card className="bg-white rounded-2xl border-0  px-4 !border-0 !shadow-none">
+      <CardContent>
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-start gap-3 min-w-0"> {/* ← 여기도 수정 */}
-            <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 bg-gray-200">
+            <div className="w-12 h-12 rounded-full overflow-hidden shrink-0">
               <img src={avatar || "/placeholder.svg"} alt={name} className="w-full h-full object-cover" />
             </div>
             <div className="flex-1 min-w-0">
