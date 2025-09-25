@@ -1,6 +1,13 @@
 import { Button } from "@vapor-ui/core";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import localFont from "next/font/local";
+
+const hakgyoansim = localFont({
+  src: "../../public/fonts/Hakgyoansim Dunggeunmiso TTF B.ttf",
+  display: "swap",
+  variable: "--font-hakgyoansim",
+});
 
 export default function SplashScreen() {
   const router = useRouter();
@@ -19,8 +26,7 @@ export default function SplashScreen() {
               제주도 소상 공인 멘토링 플랫폼
             </p>
             <h1
-              className="text-[40px] font-semibold text-black leading-[42.4px]"
-              style={{ fontFamily: "Hakgyoansim Dunggeunmiso OTF, sans-serif" }}
+              className={`text-[40px] font-semibold text-black leading-[42.4px] ${hakgyoansim.className}`}
             >
               장사살랑
             </h1>
