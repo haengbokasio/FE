@@ -8,6 +8,8 @@ import { UpcomingMentoringCard } from "@/components/upcoming-mentoring-card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { createMatching } from "@/lib/api";
+import { MentorApplicationList } from "@/components/mentor-application-list";
 
 const aiCandidates = [
   { id: "1", name: "윤수민", desc: "카페 · 애월읍", img: "/korean-woman-cafe-owner.jpg" },
@@ -24,15 +26,19 @@ type Mentor = {
   subtitle: string;
   avatar: string;
   tag: "1인 사장님" | "관광지 사장님" | "도민픽 사장님";
+  kakaoId: number;
 };
 
+// 더미 데이터 (kakaoId 추가)
 const mentors: Mentor[] = [
-  { id: "m1", name: "크림커피 #08", subtitle: "애월읍 · N년차", avatar: "/korean-man-cafe-owner.jpg", tag: "1인 사장님" },
-  { id: "m2", name: "커피 #08", subtitle: "카페 · 제주시", avatar: "/korean-man-cafe-owner.jpg", tag: "관광지 사장님" },
-  { id: "m3", name: "라떼 #12", subtitle: "식당 · 한림읍", avatar: "/korean-woman-business-owner.jpg", tag: "1인 사장님" },
-  { id: "m4", name: "크림커피 #08", subtitle: "식당 · 한림읍", avatar: "/korean-woman-business-owner.jpg", tag: "도민픽 사장님" },
-  { id: "m5", name: "크림커피 #08", subtitle: "식당 · 한림읍", avatar: "/korean-woman-business-owner.jpg", tag: "1인 사장님" },
+  { id: "m1", name: "크림커피 #08", subtitle: "애월읍 · N년차", avatar: "/korean-man-cafe-owner.jpg", tag: "1인 사장님", kakaoId: 101 },
+  { id: "m2", name: "커피 #08", subtitle: "카페 · 제주시", avatar: "/korean-man-cafe-owner.jpg", tag: "관광지 사장님", kakaoId: 102 },
+  { id: "m3", name: "라떼 #12", subtitle: "식당 · 한림읍", avatar: "/korean-woman-business-owner.jpg", tag: "1인 사장님", kakaoId: 103 },
+  { id: "m4", name: "크림커피 #08", subtitle: "식당 · 한림읍", avatar: "/korean-woman-business-owner.jpg", tag: "도민픽 사장님", kakaoId: 104 },
+  { id: "m5", name: "크림커피 #08", subtitle: "식당 · 한림읍", avatar: "/korean-woman-business-owner.jpg", tag: "1인 사장님", kakaoId: 105 },
 ];
+
+const mentiKakaoId = 999;
 
 const FILTERS = ["1인 사장님", "관광지 사장님", "도민픽 사장님"] as const;
 
@@ -59,13 +65,13 @@ export default function MenteeHome() {
             <TabsList className="h-[56px] pt-4 px-4 flex justify-start gap-0 bg-transparent">
               <TabsTrigger
                 value="recommendation"
-                className="w-[52px] h-[46px] rounded-none bg-transparent shadow-none text-gray-500 data-[state=active]:text-black border-b-2 border-transparent data-[state=active]:border-black focus-visible:outline-none focus-visible:ring-0"
+                className="w-[52px] h-[46px] text-[18px] rounded-none bg-transparent shadow-none text-gray-500 data-[state=active]:text-black border-b-2 border-transparent data-[state=active]:border-black focus-visible:outline-none focus-visible:ring-0"
               >
                 추천
               </TabsTrigger>
               <TabsTrigger
                 value="list"
-                className="w-[52px] h-[46px] rounded-none bg-transparent shadow-none text-gray-500 data-[state=active]:text-black border-b-2 border-transparent data-[state=active]:border-black focus-visible:outline-none focus-visible:ring-0"
+                className="w-[52px] h-[46px] text-[18px] rounded-none bg-transparent shadow-none text-gray-500 data-[state=active]:text-black border-b-2 border-transparent data-[state=active]:border-black focus-visible:outline-none focus-visible:ring-0"
               >
                 목록
               </TabsTrigger>
@@ -90,7 +96,7 @@ export default function MenteeHome() {
 
                 {/* AI 분석 카드 */}
                 <section className="w-[343px] mx-auto rounded-[16px] bg-white shadow-[0_0_18px_11px_rgba(0,0,0,0.05)] py-8 px-2">
-                  <div className="flex flex-col gap-6 px-4">
+                  <div className="flex flex-col gap-4 px-4">
                     {/* 라벨 */}
                     <div className="inline-flex h-[23px] items-center px-[10px] rounded-full bg-[rgba(135,116,255,0.18)] text-[#8774FF] text-[12px] font-medium w-fit">
                       ai 분석
@@ -119,68 +125,32 @@ export default function MenteeHome() {
                 </section>
 
                 {/* 멘토링 시작 카드 */}
-                <section className="w-[343px] mx-auto bg-white rounded-[20px] shadow-[0_20px_40px_-24px_rgba(0,0,0,0.18)]">
-                  <div className="flex flex-col">
-                    <h3 className="text-[18px] leading-8 p-4 font-semibold">멘토링을 시작할 수 있어요</h3>
-                    <UpcomingMentoringCard {...upcoming} />
-                  </div>
-                </section>
-
-                {/* 멘토 신청 현황 */}
-                <section className="w-[343px] mx-auto bg-white rounded-[16px] shadow-[0_0_18px_11px_rgba(0,0,0,0.05)] pt-[24px] pb-[24px] px-[8px]">
-                  <div className="flex flex-col gap-4">
-                    <h3 className="text-[18px] leading-[26px] font-semibold px-4">멘토 신청 현황</h3>
-
-                    <div className="flex flex-col gap-4 px-4 text-left">
-                      {/* item 1 */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-[49px] h-[49px] rounded-full bg-gray-200 overflow-hidden">
-                            <img src="/korean-woman-cafe-owner.jpg" alt="" className="w-full h-full object-cover" />
-                          </div>
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[16px] leading-6 font-semibold">윤수민</span>
-                            <span className="text-[14px] leading-5 tracking-[0.01em] text-black/80">카페 · 애월읍</span>
-                          </div>
-                        </div>
-                        <span className="px-2 py-1 rounded-full bg-[#DEECFF] text-[#1D7AFC] text-[14px] leading-[24px]">대기중</span>
-                      </div>
-
-                      {/* item 2 */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-[49px] h-[49px] rounded-full bg-gray-200 overflow-hidden">
-                            <img src="/korean-man-cafe-owner.jpg" alt="" className="w-full h-full object-cover" />
-                          </div>
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[16px] leading-6 font-semibold">윤수민</span>
-                            <span className="text-[14px] leading-5 tracking-[0.01em] text-black/80">카페 · 애월읍</span>
-                          </div>
-                        </div>
-                        <span className="px-2 py-1 rounded-full bg-[#FFFAF2] text-[#FF6F1C] text-[14px] leading-[24px]">보류</span>
-                      </div>
-
-                      {/* item 3 */}
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-[49px] h-[49px] rounded-full bg-gray-200 overflow-hidden">
-                            <img src="/korean-woman-business-owner.jpg" alt="" className="w-full h-full object-cover" />
-                          </div>
-                          <div className="flex flex-col gap-0.5">
-                            <span className="text-[16px] leading-6 font-semibold">윤수민</span>
-                            <span className="text-[14px] leading-5 tracking-[0.01em] text-black/80">카페 · 애월읍</span>
-                          </div>
-                        </div>
-                        <span className="px-2 py-1 rounded-full bg-[#FFF3F3] text-[#E60001] text-[14px] leading-[24px]">거절</span>
-                      </div>
-                    </div>
-
-                    <div className="px-4">
-                      <Button variant="ghost" className="w-full h-[32px] rounded-lg text-[#555] text-[14px]">
-                        더 보기
-                      </Button>
-                    </div>
-                  </div>
+                <section className="w-[343px] mx-auto">
+                  <MentorApplicationList
+                    applications={[
+                      {
+                        id: "1",
+                        name: "윤수민",
+                        job: "카페 · 애월읍",
+                        avatar: "/korean-woman-cafe-owner.jpg",
+                        status: "waiting",
+                      },
+                      {
+                        id: "2",
+                        name: "윤수민",
+                        job: "카페 · 애월읍",
+                        avatar: "/korean-man-cafe-owner.jpg",
+                        status: "completed",
+                      },
+                      {
+                        id: "3",
+                        name: "윤수민",
+                        job: "카페 · 애월읍",
+                        avatar: "/korean-woman-business-owner.jpg",
+                        status: "rejected",
+                      },
+                    ]}
+                  />
                 </section>
               </div>
             </TabsContent>
@@ -199,7 +169,7 @@ export default function MenteeHome() {
                           key={f}
                           onClick={() => setSelectedFilter(f)}
                           className={[
-                            "w-[82px] h-[32px] rounded-[16px]",
+                            "w-[82px] h-[32px] rounded-[2px]",
                             "rounded-[14px] text-[10px] font-large",
                             active ? "bg-[#8774FF] text-white" : "bg-[#EDEDED] text-black/70",
                           ].join(" ")}
@@ -219,17 +189,37 @@ export default function MenteeHome() {
                 {/* 리스트 */}
                 <ul className="flex flex-col gap-6">
                   {filtered.map((m) => (
-                    <li key={m.id} className="flex items-center gap-3">
-                      <div className="w-[48px] h-[48px] rounded-full overflow-hidden bg-neutral-200 shrink-0">
-                        <img src={m.avatar} alt="" className="w-full h-full object-cover" />
+                    <li key={m.id} className="flex items-center justify-between gap-3">
+                      {/* 왼쪽: 아바타 + 정보 */}
+                      <div className="flex items-center gap-3">
+                        <div className="w-[48px] h-[48px] rounded-full overflow-hidden bg-neutral-200 shrink-0">
+                          <img src={m.avatar} alt={m.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex flex-col text-left">
+                          <p className="text-[18px] font-semibold leading-6">{m.name}</p>
+                          <p className="text-[14px] text-black/70 leading-5">{m.subtitle}</p>
+                        </div>
                       </div>
-                      <div className="flex flex-col text-left">
-                        <p className="text-[18px] font-semibold leading-6">{m.name}</p>
-                        <p className="text-[14px] text-black/70 leading-5">{m.subtitle}</p>
-                      </div>
+
+                      {/* 오른쪽: 신청 버튼 */}
+                      <button
+                        onClick={async () => {
+                          try {
+                            const data = await createMatching(m.kakaoId, 999); // 로그인한 멘티 ID
+                            console.log("매칭 성공:", data);
+                            alert("신청 완료!");
+                          } catch (err: unknown) {
+                            // alert(err.message);
+                          }
+                        }}
+                        className="px-3 py-1 rounded-lg bg-[#FFF2EA] border border-[#FFD5BD] text-[#FF782A] text-sm"
+                      >
+                        신청하기
+                      </button>
                     </li>
                   ))}
                 </ul>
+
               </div>
             </TabsContent>
           </Tabs>
@@ -274,7 +264,7 @@ export default function MenteeHome() {
                   <button
                     aria-label="닫기"
                     onClick={() => setShowHeroModal(false)}
-                    className="absolute top-5 right-4 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                    className="absolute top-7 right-4 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                   >
                     ✕
                   </button>
