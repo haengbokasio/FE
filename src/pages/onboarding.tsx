@@ -59,6 +59,9 @@ export default function OnboardingPage() {
 
   const handleBack = () => {
     switch (currentStep) {
+      case "role-selection":
+        router.push("/");
+        break;
       case "mentor-1":
       case "mentee-1":
         setCurrentStep("role-selection");

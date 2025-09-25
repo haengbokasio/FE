@@ -116,7 +116,7 @@ const MentorForm1 = ({ data, setData }: MentorForm1Props) => {
                 <span className="text-[#AB3406]">*</span>
               </Field.Label>
               <InputGroup.Root>
-                <div className="flex">
+                <div className="flex w-full">
                   <TextInput
                     id="mentor-phone"
                     size="lg"
@@ -171,8 +171,8 @@ const MentorForm1 = ({ data, setData }: MentorForm1Props) => {
                 {isVerifying
                   ? "인증 중..."
                   : verificationStatus?.verified
-                  ? "인증완료"
-                  : "인증하기"}
+                    ? "인증완료"
+                    : "인증하기"}
               </Button>
             </div>
 

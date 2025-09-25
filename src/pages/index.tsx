@@ -1,7 +1,6 @@
 import { Button } from "@vapor-ui/core";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import KakaoLogin from "@/features/login/KakaoLogin";
 
 export default function SplashScreen() {
   const router = useRouter();
@@ -40,7 +39,6 @@ export default function SplashScreen() {
 
           {/* 하단 버튼 */}
           <div className="w-full px-4 pb-[30px]">
-            <KakaoLogin />
             <Button
               onClick={handleGetStarted}
               size="lg"
