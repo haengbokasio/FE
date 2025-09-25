@@ -6,10 +6,10 @@ export function StatusPill({ status }: { status: "신청완료" | "대기중" | 
   }
 
   return (
+
     <span className={`inline-flex items-center justify-center h-[28px] px-3 text-[13px] font-medium ${styles[status]}`}>
+
       {status}
     </span>
   )
 }
-
-

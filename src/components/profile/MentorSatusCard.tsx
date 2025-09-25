@@ -23,9 +23,7 @@ export function MentorStatusCard() {
               </div>
             ))}
           </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+    </Card> 
   )
 }
-
-
