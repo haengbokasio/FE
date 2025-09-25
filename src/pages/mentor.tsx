@@ -75,10 +75,10 @@ export default function MentorHome() {
               <div className="flex flex-col gap-[16px] mt-[32px]">
      
                 <div
-                  className="relative w-[343px] h-[176px] mx-auto rounded-[20px] overflow-hidden shadow-[0_20px_40px_-24px_rgba(0,0,0,0.25)] cursor-pointer" 
+                  className="relative w-full h-[176px] mx-auto rounded-[20px] overflow-hidden shadow-[0_20px_40px_-24px_rgba(0,0,0,0.25)] cursor-pointer" 
                   onClick={() => setShowHeroModal(true)} // +추가
                 >
-                  <img src="/banner2.png" alt="배너" className="inset-0 w-full h-full object-cover" />
+                  <img src="/banner2.png" alt="배너" className="relative w-full h-full object-cover" />
                   <div className="absolute top-[32px] left-5 flex flex-col gap-1 text-left text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
                     <p className="text-[12px] font-semibold">✨ AI 강점 분석</p>
                     <h3 className="text-[18px] font-semibold">실전 가능한 온라인</h3>

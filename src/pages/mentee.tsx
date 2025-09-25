@@ -217,7 +217,7 @@ export default function MenteeHome() {
                         신청하기
                       </button>
                     </li>
-                  ))}
+                  ))}햣 
                 </ul>
 
               </div>
@@ -277,7 +277,7 @@ export default function MenteeHome() {
                   </div>
 
                   {/* 제목 */}
-                  <div className="absolute top-20 left-8 z-10 w-[260px]">
+                  <div className="absolute top-20 left-8 z-10 w-[343x]">
                     <h2 className="text-[28px] font-bold leading-[34px] text-black break-words text-left">
                       실전 가능한 온라인 홍보 노하우
                     </h2>

@@ -47,7 +47,7 @@ export function MentorApplicationList({ applications }: MentorApplicationListPro
       </CardHeader>
       <CardContent className="space-y-3">
         {applications.map((application) => (
-          <div key={application.id} className="flex items-center justify-between">
+          <div key={application.id} className="flex items-center justify-between p-4">
             <div className="flex items-center gap-3">
               <Avatar className="w-10 h-10">
                 <AvatarImage src={application.avatar || "/placeholder.svg"} alt={application.name} />
