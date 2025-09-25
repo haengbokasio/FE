@@ -41,7 +41,7 @@ const MentorDone = () => {
   }, []);
 
   const handleConfirm = () => {
-    router.push("/home");
+    router.push("/mentor");
   };
 
   return (

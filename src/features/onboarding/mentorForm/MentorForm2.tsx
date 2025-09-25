@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CUSTOMER_OPTIONS, MARKETING_OPTIONS } from "../types/selectTypes";
 import { MentorAnalysisResult } from "@/pages/api/aiAnalyzedReport";
+import { haengbokasioApi, MentorRegisterRequest } from "@/services/api";
 interface MentorFormData {
   businessType: string;
   detailedBusinessType?: string;
@@ -122,6 +123,55 @@ const MentorForm2 = ({ onNext, onBack }: MentorForm2Props) => {
       // 결과를 sessionStorage에 저장
       sessionStorage.setItem("aiAnalysisStatus", "completed");
       sessionStorage.setItem("aiAnalysisResult", JSON.stringify(result));
+
+      // AI 분석 성공 후 registerMentor 호출
+      const kakaoId = localStorage.getItem("kakaoId");
+      if (kakaoId && result) {
+        try {
+          const mentorRegisterData: MentorRegisterRequest = {
+            kakaoId: parseInt(kakaoId),
+            phoneNumber: formDataWithPhone.phoneNumber,
+            businessType: formDataWithPhone.businessType,
+            businessDetail: formDataWithPhone.detailedBusinessType || "",
+            businessAddress: formDataWithPhone.storeLocation,
+            mainProductService: formDataWithPhone.representativeProduct,
+            operationMethod: "", // 멘토 폼에는 없는 필드이므로 빈 문자열
+            supplySource: "", // 멘토 폼에는 없는 필드이므로 빈 문자열
+            operationPeriod: formDataWithPhone.operatingPeriod,
+            monthAvgRevenue: formDataWithPhone.revenueAvg,
+            weekAvgDailyRevenue: formDataWithPhone.salesAvg,
+            targetCustomer: formDataWithPhone.mainCustomers?.join(", ") || "",
+            customerAcquisitionMethod: "", // 멘토 폼에는 없는 필드이므로 빈 문자열
+            marketingMethod:
+              formDataWithPhone.marketingMethod?.join(", ") || "",
+            aiAnalysis: JSON.stringify(result), // AI 분석 결과를 문자열로 변환
+          };
+
+          console.log("🚀 멘토 등록 요청 데이터:", {
+            url: `/users/mentor/register/${kakaoId}`,
+            data: mentorRegisterData,
+          });
+
+          const registerResponse = await haengbokasioApi.registerMentor(
+            kakaoId,
+            mentorRegisterData
+          );
+          console.log("멘토 등록 성공:", registerResponse);
+
+          sessionStorage.setItem("mentorRegisterStatus", "completed");
+          sessionStorage.setItem(
+            "mentorRegisterResult",
+            JSON.stringify(registerResponse)
+          );
+        } catch (registerError) {
+          console.error("멘토 등록 오류:", registerError);
+          sessionStorage.setItem("mentorRegisterStatus", "error");
+          sessionStorage.setItem(
+            "mentorRegisterError",
+            JSON.stringify(registerError)
+          );
+        }
+      }
     } catch (error) {
       console.error("AI 분석 오류:", error);
       sessionStorage.setItem("aiAnalysisStatus", "error");

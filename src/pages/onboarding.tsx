@@ -46,8 +46,10 @@ export default function OnboardingPage() {
       // 에러 처리 - 필요시 사용자에게 알림
     }
     if (data.role === "멘토") {
+      localStorage.setItem("role", "mentor");
       setCurrentStep("mentor-1");
     } else if (data.role === "멘티") {
+      localStorage.setItem("role", "mentee");
       setCurrentStep("mentee-1");
     }
   };
@@ -65,7 +67,6 @@ export default function OnboardingPage() {
         break;
       case "mentor-done":
       case "mentee-done":
-        router.push("/home");
         break;
     }
   };

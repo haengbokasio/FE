@@ -41,7 +41,7 @@ const MenteeDone = () => {
   }, []);
 
   const handleConfirm = () => {
-    router.push("/home");
+    router.push("/mentee");
   };
 
   return (
