@@ -44,7 +44,7 @@ export default function MentoringPage() {
       <AppHeader />
 
       {/* 컨텐츠 래퍼 */}
-      <div className="mx-auto w-full max-w-[480px] px-4 pb-24">
+      <div className="mx-auto w-full px-4 pb-24">
         {/* 탭 영역 (추천 강조 바) */}
         <div className="pt-5">
           <div className="w-fit border-b-4 border-black pb-2">
@@ -55,7 +55,14 @@ export default function MentoringPage() {
         {/* 상단 카드 배너 */}
         <section className="relative mt-5 rounded-[22px] bg-white p-6 overflow-hidden">
           <div className="flex flex-col gap-3 relative z-10">
-            <Badge color="primary" size="sm" shape="pill">함께한 멘티들</Badge>
+            <Badge
+            color="primary"
+            size="sm"
+            shape="pill"
+            className="w-fit"
+            >
+            함께한 멘티들
+            </Badge>
             <h3 className="text-[20px] leading-[36px] font-semibold text-black">
               21명의 멘티님과 함께했어요
             </h3>
@@ -65,7 +72,7 @@ export default function MentoringPage() {
           </div>
 
           {/* 구름/일러스트 배경 이미지 (예: /cloud-banner.png) */}
-          <div className="absolute right-[-20px] bottom-[-10px]">
+          <div className="absolute left-[-1px] top-[-10px]">
             <Image
               src="/star_banner2.png"
               alt="구름 배너"
