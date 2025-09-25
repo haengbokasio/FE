@@ -108,3 +108,62 @@ export interface ConnectedMentor {
 }
 
 export type ConnectedMentorList = ConnectedMentor[];
+
+// 연결중인 멘티 리스트 응답 타입 (멘토와 동일한 구조)
+export interface ConnectedMenti {
+  id: number;
+  kakaoId: number;
+  phoneNumber: string;
+  businessType: string;
+  businessDetail: string;
+  operationPeriod: number;
+  monthAvgRevenue: number;
+  weekAvgDailyRevenue: number;
+  businessAddress: string;
+  mainProductService: string;
+  targetCustomer: string;
+  customerAcquisitionMethod: string;
+  marketingMethod: string;
+  operationMethod: string;
+  supplySource: string;
+  aiAnalysis: string;
+}
+
+export type ConnectedMentiList = ConnectedMenti[];
+
+// 매칭 생성 요청 타입
+export interface CreateMatchingRequest {
+  mentorKakaoId: number;
+  mentiKakaoId: number;
+}
+
+// 매칭 승인 요청 타입
+export interface ApproveMatchingRequest {
+  mentorKakaoId: number;
+  mentiKakaoId: number;
+}
+
+// 매칭 거절 요청 타입
+export interface RejectMatchingRequest {
+  mentorKakaoId: number;
+  mentiKakaoId: number;
+}
+
+// 마이페이지 응답 타입
+export interface MyPageResponse {
+  kakaoId: number;
+  phoneNumber: string;
+  businessType: string;
+  businessDetail: string;
+  businessAddress: string;
+  mainProductService: string;
+  operationMethod: string;
+  supplySource: string;
+  operationPeriod: number;
+  monthAvgRevenue: number;
+  weekAvgDailyRevenue: number;
+  targetCustomer: string;
+  customerAcquisitionMethod: string;
+  marketingMethod: string;
+  aiAnalysis: string;
+}

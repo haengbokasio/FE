@@ -283,7 +283,7 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
                 subtitle="한 달 동안 벌어들인 총 수입을 알려주세요"
                 min={0}
                 max={1200}
-                step={10}
+                step={100}
                 value={field.value}
                 onValueChange={field.onChange}
                 unit="만원"
