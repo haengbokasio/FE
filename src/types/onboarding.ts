@@ -9,5 +9,6 @@ export interface OnboardingData {
   experience: string;
   certificate: string;
   businessRegistration: boolean;
+  businessRegistrationNumber?: string;
   salesProof: boolean;
 }

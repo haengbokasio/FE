@@ -14,6 +14,7 @@ export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState("role-selection"); // role-selection, mentor-1, mentor-2, mentor-done, mentee-1, mentee-done
   const [data, setData] = useState<OnboardingData>({
     role: "",
+    businessRegistrationNumber: "",
     name: "",
     age: "",
     interests: [],
@@ -108,7 +109,7 @@ export default function OnboardingPage() {
       case "mentor-1":
         return <MentorForm1 data={data} setData={setData} />;
       case "mentor-2":
-        return <MentorForm2 onNext={handleNext} />;
+        return <MentorForm2 onNext={handleNext} onBack={handleBack} />;
       case "mentor-done":
         return <MentorDone />;
       case "mentee-1":
@@ -123,7 +124,7 @@ export default function OnboardingPage() {
   const progressSteps = getProgressSteps();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen relative">
       <div className="flex flex-col min-h-screen max-w-sm mx-auto">
         {progressSteps && (
           <div className="px-4 pt-[74px]">
@@ -147,7 +148,7 @@ export default function OnboardingPage() {
 
           {/* 역할 선택 화면 버튼 - 하단 고정 */}
           {currentStep === "role-selection" && data.role && (
-            <div className="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-white border-t border-gray-100">
+            <div className="absolute bottom-0 left-0 right-0 p-4 pb-8 border-t border-gray-100">
               <div className="flex justify-between items-center gap-[6px] w-full max-w-[343px] mx-auto">
                 <Button
                   onClick={handleBack}
@@ -162,7 +163,7 @@ export default function OnboardingPage() {
                   color="primary"
                   size="lg"
                 >
-                  선택하기
+                  다음
                 </Button>
               </div>
             </div>
@@ -170,7 +171,7 @@ export default function OnboardingPage() {
 
           {/* MentorForm1 버튼 - 하단 고정 */}
           {currentStep === "mentor-1" && (
-            <div className="absolute bottom-0 left-0 right-0 p-4 pb-8 bg-white border-t border-gray-100">
+            <div className="absolute bottom-0 left-0 right-0 p-4 pb-8">
               <div className="flex justify-between items-center gap-[6px] w-full max-w-[343px] mx-auto">
                 <Button
                   onClick={handleBack}
@@ -209,7 +210,7 @@ export default function OnboardingPage() {
                     !data.salesProof
                   }
                 >
-                  선택하기
+                  다음
                 </Button>
               </div>
             </div>
