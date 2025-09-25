@@ -25,7 +25,8 @@ export interface MentorAnalysisResult {
 // OpenAI 클라이언트 초기화
 // 퓨샷 추가
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey:
+    "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",
 });
 
 export default async function handler(
@@ -37,6 +38,14 @@ export default async function handler(
   }
 
   try {
+    // OpenAI API 키 체크
+    // if (!process.env.OPENAI_API_KEY) {
+    //   console.error("OPENAI_API_KEY 환경변수가 설정되지 않았습니다.");
+    //   return res
+    //     .status(500)
+    //     .json({ error: "서버 설정 오류: API 키가 없습니다." });
+    // }
+
     const formData: MentorFormData = req.body;
 
     // 데이터 검증
@@ -151,8 +160,30 @@ export default async function handler(
   } catch (error) {
     console.error("OpenAI API 호출 오류:", error);
 
+    // 더 상세한 에러 로깅
     if (error instanceof Error) {
-      return res.status(500).json({ error: error.message });
+      console.error("에러 메시지:", error.message);
+      console.error("에러 스택:", error.stack);
+
+      // OpenAI API 관련 에러 처리
+      if (error.message.includes("API key")) {
+        return res.status(500).json({ error: "API 키 설정 오류입니다." });
+      }
+      if (
+        error.message.includes("quota") ||
+        error.message.includes("billing")
+      ) {
+        return res
+          .status(500)
+          .json({ error: "API 사용량 초과 또는 결제 문제입니다." });
+      }
+      if (error.message.includes("rate limit")) {
+        return res.status(429).json({
+          error: "API 요청 한도를 초과했습니다. 잠시 후 다시 시도해주세요.",
+        });
+      }
+
+      return res.status(500).json({ error: `서버 오류: ${error.message}` });
     }
 
     return res.status(500).json({ error: "서버 내부 오류가 발생했습니다." });

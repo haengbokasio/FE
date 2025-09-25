@@ -24,7 +24,8 @@ export interface MenteeAnalysisResult {
 // OpenAI 클라이언트 초기화
 // 퓨샷 추가
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey:
+    "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",
 });
 
 export default async function handler(
