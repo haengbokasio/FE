@@ -127,7 +127,7 @@ export default function MentorHome() {
               </div>
             ) : (
               <div className="space-y-4">
-                {mentors.map((m) => (
+                {/* {mentors.map((m) => (
                   <MentorProfileCard
                     key={m.id}
                     name={m.name}
@@ -135,7 +135,7 @@ export default function MentorHome() {
                     avatar={m.avatar}
                     onApply={() => console.log("apply", m.id)}
                   />
-                ))}
+                ))} */}
               </div>
             )}
           
