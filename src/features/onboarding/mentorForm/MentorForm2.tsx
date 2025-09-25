@@ -10,7 +10,7 @@ import { Field } from "@vapor-ui/core/field";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CUSTOMER_OPTIONS, MARKETING_OPTIONS } from "../types/selectTypes";
-
+import { MentorAnalysisResult } from "@/pages/api/aiAnalyzedReport";
 interface MentorFormData {
   businessType: string;
   detailedBusinessType?: string;
@@ -52,6 +52,25 @@ const MentorForm2 = ({ onNext }: MentorForm2Props) => {
 
   const businessType = watch("businessType");
 
+  const aiAnalyzedReport = async (
+    formData: MentorFormData
+  ): Promise<MentorAnalysisResult> => {
+    const response = await fetch("/api/aiAnalyzedReport", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "분석 요청에 실패했습니다.");
+    }
+
+    return response.json();
+  };
+
   useEffect(() => {
     const savedPhoneNumber = sessionStorage.getItem("phoneNumber");
     if (savedPhoneNumber) {
@@ -88,6 +107,7 @@ const MentorForm2 = ({ onNext }: MentorForm2Props) => {
     };
 
     console.log("멘토 폼 데이터:", formDataWithPhone);
+    aiAnalyzedReport(formDataWithPhone);
     onNext();
   };
 
