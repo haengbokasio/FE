@@ -8,6 +8,7 @@ import MentorForm1 from "../features/onboarding/mentorForm/MentorForm1";
 import MentorForm2 from "../features/onboarding/mentorForm/MentorForm2";
 import MentorMentee from "../features/onboarding/MentorMentee";
 import { OnboardingData } from "../types/onboarding";
+import { haengbokasioApi } from "../services/api";
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -31,7 +32,19 @@ export default function OnboardingPage() {
     setData((prev) => ({ ...prev, role }));
   };
 
-  const handleStartFunnel = () => {
+  const handleStartFunnel = async () => {
+    try {
+      // /login/create API 호출
+      const response = await haengbokasioApi.createLogin();
+
+      // kakaoId를 로컬스토리지에 저장
+      localStorage.setItem("kakaoId", response.kakaoId.toString());
+
+      setCurrentStep("mentor-2");
+    } catch (error) {
+      console.error("로그인 생성 실패:", error);
+      // 에러 처리 - 필요시 사용자에게 알림
+    }
     if (data.role === "멘토") {
       setCurrentStep("mentor-1");
     } else if (data.role === "멘티") {

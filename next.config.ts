@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
     esmExternals: "loose",
     // 서버 번들에서 외부 패키지로 남기지 않고 묶어서 처리 (특히 ESM 패키지)
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://haengbokasio.goorm.training/api/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

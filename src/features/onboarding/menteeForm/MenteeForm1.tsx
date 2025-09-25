@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CUSTOMER_OPTIONS } from "../types/selectTypes";
 import { MenteeAnalysisResult } from "@/pages/api/aiAnalyzedReportMentee";
+import { haengbokasioApi, MentiRegisterRequest } from "@/services/api";
 
 interface MenteeFormData {
   businessType: string;
@@ -99,10 +100,12 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
 
   const onSubmit = async (data: MenteeFormData) => {
     const phoneNumber = sessionStorage.getItem("phoneNumber") || "";
+    const kakaoId = localStorage.getItem("kakaoId") || "";
 
     const formDataWithPhone = {
       ...data,
       phoneNumber: phoneNumber,
+      kakaoId: kakaoId,
     };
 
     console.log("멘티 폼 데이터:", formDataWithPhone);
@@ -120,6 +123,60 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
       // 결과를 sessionStorage에 저장
       sessionStorage.setItem("aiAnalysisStatus", "completed");
       sessionStorage.setItem("aiAnalysisResult", JSON.stringify(result));
+
+      // AI 성공 후 registerMenti 호출
+      const kakaoId = localStorage.getItem("kakaoId");
+      if (kakaoId && result) {
+        try {
+          const convertedAnalysis = {
+            strengths: result.coachingPoints || [],
+            topStrengthCopy: result.topWeaknessCopy || "",
+            coachingPoints: result.weakness || [],
+          };
+
+          const mentiRegisterData: MentiRegisterRequest = {
+            kakaoId: parseInt(kakaoId),
+            phoneNumber: formDataWithPhone.phoneNumber,
+            businessType: formDataWithPhone.businessType,
+            businessDetail: formDataWithPhone.detailedBusinessType || "",
+            businessAddress: formDataWithPhone.storeLocation,
+            mainProductService: formDataWithPhone.representativeProduct,
+            operationMethod: "",
+            supplySource: "",
+            operationPeriod: formDataWithPhone.operatingPeriod,
+            monthAvgRevenue: formDataWithPhone.revenueAvg,
+            weekAvgDailyRevenue: formDataWithPhone.salesAvg,
+            targetCustomer: formDataWithPhone.mainCustomers?.join(", ") || "",
+            customerAcquisitionMethod: "",
+            marketingMethod: "",
+            aiAnalysis: JSON.stringify(convertedAnalysis),
+          };
+
+          console.log("🚀 멘티 등록 요청 데이터:", {
+            url: `/users/menti/register/${kakaoId}`,
+            data: mentiRegisterData,
+          });
+
+          const registerResponse = await haengbokasioApi.registerMenti(
+            kakaoId,
+            mentiRegisterData
+          );
+          console.log("멘티 등록 성공:", registerResponse);
+
+          sessionStorage.setItem("mentiRegisterStatus", "completed");
+          sessionStorage.setItem(
+            "mentiRegisterResult",
+            JSON.stringify(registerResponse)
+          );
+        } catch (registerError) {
+          console.error("멘티 등록 오류:", registerError);
+          sessionStorage.setItem("mentiRegisterStatus", "error");
+          sessionStorage.setItem(
+            "mentiRegisterError",
+            JSON.stringify(registerError)
+          );
+        }
+      }
     } catch (error) {
       console.error("AI 분석 오류:", error);
       sessionStorage.setItem("aiAnalysisStatus", "error");
