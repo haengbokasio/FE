@@ -269,8 +269,8 @@ const MentorForm2 = ({ onNext, onBack }: MentorForm2Props) => {
                 title="월 평균 순수익"
                 subtitle="인건비, 재료비 등 비용을 제외한 순수익을 알려주세요"
                 min={0}
-                max={100}
-                step={1}
+                max={1000}
+                step={100}
                 value={field.value}
                 onValueChange={field.onChange}
                 unit="만원"
