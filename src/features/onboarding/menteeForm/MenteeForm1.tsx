@@ -10,6 +10,7 @@ import { Field } from "@vapor-ui/core/field";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { CUSTOMER_OPTIONS } from "../types/selectTypes";
+import { MenteeAnalysisResult } from "@/pages/api/aiAnalyzedReportMentee";
 
 interface MenteeFormData {
   businessType: string;
@@ -50,6 +51,25 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
 
   const businessType = watch("businessType");
 
+  const aiAnalyzedReportMentee = async (
+    formData: MenteeFormData
+  ): Promise<MenteeAnalysisResult> => {
+    const response = await fetch("/api/aiAnalyzedReportMentee", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "분석 요청에 실패했습니다.");
+    }
+
+    return response.json();
+  };
+
   useEffect(() => {
     const savedPhoneNumber = sessionStorage.getItem("phoneNumber");
     if (savedPhoneNumber) {
@@ -77,7 +97,7 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
     setValue("detailedBusinessType", "");
   };
 
-  const onSubmit = (data: MenteeFormData) => {
+  const onSubmit = async (data: MenteeFormData) => {
     const phoneNumber = sessionStorage.getItem("phoneNumber") || "";
 
     const formDataWithPhone = {
@@ -86,7 +106,25 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
     };
 
     console.log("멘티 폼 데이터:", formDataWithPhone);
+
+    // 로딩 상태를 sessionStorage에 저장
+    sessionStorage.setItem("aiAnalysisStatus", "loading");
+    sessionStorage.setItem("menteeFormData", JSON.stringify(formDataWithPhone));
+
+    // 즉시 다음 화면으로 이동
     onNext();
+
+    // 백그라운드에서 AI 분석 요청
+    try {
+      const result = await aiAnalyzedReportMentee(formDataWithPhone);
+      // 결과를 sessionStorage에 저장
+      sessionStorage.setItem("aiAnalysisStatus", "completed");
+      sessionStorage.setItem("aiAnalysisResult", JSON.stringify(result));
+    } catch (error) {
+      console.error("AI 분석 오류:", error);
+      sessionStorage.setItem("aiAnalysisStatus", "error");
+      sessionStorage.setItem("aiAnalysisError", JSON.stringify(error));
+    }
   };
 
   const isFormComplete = () => {
@@ -116,7 +154,7 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
   };
 
   return (
-    <div className="pt-[53px] pb-[100px]">
+    <div className="pt-[49px] pb-[100px]">
       <div>
         <h2 className="text-2xl font-semibold text-black leading-[32px] -tracking-[0.24px] mb-1">
           세부 정보를 입력해주세요
@@ -280,7 +318,7 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
         </VStack>
       </form>
 
-      <div className="w-full flex absolute bottom-0 left-0 right-0 p-4 pb-8 bg-white border-t border-gray-100">
+      <div className="w-full flex  bg-white border-t border-gray-100">
         <Button
           type="submit"
           onClick={handleSubmit(onSubmit)}
@@ -461,7 +499,7 @@ const SliderSection = ({
   unit = "",
 }: SliderSectionProps) => {
   return (
-    <div className="bg-white rounded-lg border-gray-200">
+    <div className=" rounded-lg border-gray-200">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h3 className="text-lg font-bold text-[#262626] leading-[26px] mb-1">
