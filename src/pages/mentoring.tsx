@@ -9,14 +9,6 @@ import { haengbokasioApi, ConnectedMentorList } from "@/services/api";
 // 난수 생성 함수
 const generateRandomNumber = () => Math.floor(Math.random() * 9000) + 1000;
 
-function Pill({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex h-[26px] items-center px-[12px] rounded-full bg-[rgba(135,116,255,0.18)] text-[#8774FF] text-[12px] font-medium shadow-[0_0_12px_9px_rgba(0,0,0,0.05)]">
-      {children}
-    </span>
-  );
-}
-
 function MentoringItem({
   item,
 }: {

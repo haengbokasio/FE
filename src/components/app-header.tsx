@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import localFont from "next/font/local";
 
 const hakgyoansim = localFont({
@@ -10,7 +10,7 @@ const hakgyoansim = localFont({
 });
 
 export function AppHeader() {
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <header className="flex items-center justify-between px-4 py-2 h-[50px]">
@@ -19,10 +19,10 @@ export function AppHeader() {
       >
         장사살랑
       </h1>
-      <div
+      {/* <div
         className="w-[42px] h-[42px] rounded-full bg-gray-300 cursor-pointer"
         onClick={() => router.push("/mentoring")} // 👈 클릭 시 이동
-      />
+      /> */}
     </header>
   );
 }

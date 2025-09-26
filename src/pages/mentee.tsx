@@ -14,7 +14,6 @@ import {
   MyPageResponse,
   ConnectedMentorList,
 } from "@/services/api";
-import { useRouter } from "next/router";
 
 // 난수 생성 함수
 const generateRandomNumber = () => Math.floor(Math.random() * 9000) + 1000;
@@ -75,7 +74,6 @@ const mentors: Mentor[] = [
 const FILTERS = ["1인 사장님", "관광지 사장님", "도민픽 사장님"] as const;
 
 export default function MenteeHome() {
-  const router = useRouter();
   const [showHeroModal, setShowHeroModal] = useState(false);
   const [activeTab, setActiveTab] = useState("recommendation");
   const [selectedFilter, setSelectedFilter] =
@@ -99,7 +97,7 @@ export default function MenteeHome() {
       name: string;
       job: string;
       avatar?: string;
-      status: "APPROVED" | "WAITING" | "REJECTED";
+      status: "completed" | "waiting" | "rejected";
       kakaoId: number;
     }>
   >([]);
@@ -155,7 +153,7 @@ export default function MenteeHome() {
       console.log("✅ 매칭 신청 성공!");
       alert("매칭 신청이 완료되었습니다!");
       setShowHeroModal(false);
-    } catch (error) {
+    } catch {
       // console.error("❌ 매칭 신청 실패:", error);
       // alert("매칭 신청에 실패했습니다. 다시 시도해주세요.");
       setShowHeroModal(false);
