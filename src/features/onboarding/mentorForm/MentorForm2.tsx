@@ -101,11 +101,19 @@ const MentorForm2 = ({ onNext, onBack }: MentorForm2Props) => {
   };
 
   const onSubmit = async (data: MentorFormData) => {
-    const phoneNumber = sessionStorage.getItem("phoneNumber") || "";
+    // 폼 데이터 검증
+    if (!data.phoneNumber || data.phoneNumber === "000") {
+      alert("올바른 전화번호를 입력해주세요.");
+      return;
+    }
+
+    if (!data.businessType || !data.storeLocation || !data.representativeProduct) {
+      alert("모든 필수 항목을 입력해주세요.");
+      return;
+    }
 
     const formDataWithPhone = {
       ...data,
-      phoneNumber: phoneNumber,
     };
 
     console.log("멘토 폼 데이터:", formDataWithPhone);
@@ -129,8 +137,7 @@ const MentorForm2 = ({ onNext, onBack }: MentorForm2Props) => {
       if (kakaoId && result) {
         try {
           const mentorRegisterData: MentorRegisterRequest = {
-            kakaoId: parseInt(kakaoId),
-            phoneNumber: formDataWithPhone.phoneNumber,
+            phoneNumber: formDataWithPhone.phoneNumber || "",
             businessType: formDataWithPhone.businessType,
             businessDetail: formDataWithPhone.detailedBusinessType || "",
             businessAddress: formDataWithPhone.storeLocation,
@@ -275,6 +282,29 @@ const MentorForm2 = ({ onNext, onBack }: MentorForm2Props) => {
                 onValueChange={field.onChange}
                 unit="만원"
               />
+            )}
+          />
+
+          <Controller
+            name="phoneNumber"
+            control={control}
+            rules={{ required: "전화번호를 입력해주세요" }}
+            render={({ field }) => (
+              <Field.Root>
+                <Field.Label className="text-lg font-bold text-[#262626] leading-[26px] mb-1">
+                  전화번호
+                </Field.Label>
+                <TextInput
+                  placeholder="예: 010-1234-5678"
+                  {...field}
+                  className="w-full h-10 px-4 border border-[#E1E1E1] rounded-lg mt-4"
+                />
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.phoneNumber.message}
+                  </p>
+                )}
+              </Field.Root>
             )}
           />
 

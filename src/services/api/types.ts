@@ -11,9 +11,8 @@ export interface MentorAnalysisResult {
   coachingPoints: string[];
 }
 
-// 멘티 등록 요청 타입 (body에 실어보낼 데이터)
+// 멘티 등록 요청 타입 (body에 실어보낼 데이터) - kakaoId는 path parameter로 제거
 export interface MentiRegisterRequest {
-  kakaoId: number;
   phoneNumber: string;
   businessType: string;
   businessDetail: string;
@@ -49,9 +48,8 @@ export interface MentiRegisterResponse {
   aiAnalysis: string;
 }
 
-// 멘토 등록 요청 타입 (body에 실어보낼 데이터)
+// 멘토 등록 요청 타입 (body에 실어보낼 데이터) - kakaoId는 path parameter로 제거
 export interface MentorRegisterRequest {
-  kakaoId: number;
   phoneNumber: string;
   businessType: string;
   businessDetail: string;

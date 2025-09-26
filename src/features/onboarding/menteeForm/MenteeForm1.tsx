@@ -99,12 +99,21 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
   };
 
   const onSubmit = async (data: MenteeFormData) => {
-    const phoneNumber = sessionStorage.getItem("phoneNumber") || "";
     const kakaoId = localStorage.getItem("kakaoId") || "";
+
+    // 폼 데이터 검증
+    if (!data.phoneNumber || data.phoneNumber === "000") {
+      alert("올바른 전화번호를 입력해주세요.");
+      return;
+    }
+
+    if (!data.businessType || !data.storeLocation || !data.representativeProduct) {
+      alert("모든 필수 항목을 입력해주세요.");
+      return;
+    }
 
     const formDataWithPhone = {
       ...data,
-      phoneNumber: phoneNumber,
       kakaoId: kakaoId,
     };
 
@@ -135,8 +144,7 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
           };
 
           const mentiRegisterData: MentiRegisterRequest = {
-            kakaoId: parseInt(kakaoId),
-            phoneNumber: formDataWithPhone.phoneNumber,
+            phoneNumber: formDataWithPhone.phoneNumber || "",
             businessType: formDataWithPhone.businessType,
             businessDetail: formDataWithPhone.detailedBusinessType || "",
             businessAddress: formDataWithPhone.storeLocation,
@@ -156,6 +164,11 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
             url: `/users/menti/register/${kakaoId}`,
             data: mentiRegisterData,
           });
+
+          // API 호출 전 데이터 검증
+          if (!mentiRegisterData.phoneNumber || mentiRegisterData.phoneNumber === "000") {
+            throw new Error("전화번호가 올바르지 않습니다.");
+          }
 
           const registerResponse = await haengbokasioApi.registerMenti(
             kakaoId,
@@ -193,6 +206,7 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
       operatingPeriod: formData.operatingPeriod,
       revenueAvg: formData.revenueAvg,
       salesAvg: formData.salesAvg,
+      phoneNumber: formData.phoneNumber,
       storeLocation: formData.storeLocation,
       representativeProduct: formData.representativeProduct,
       mainCustomers: formData.mainCustomers,
@@ -204,6 +218,7 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
       formData.operatingPeriod >= 0 &&
       formData.revenueAvg >= 0 &&
       formData.salesAvg >= 0 &&
+      formData.phoneNumber &&
       formData.storeLocation &&
       formData.representativeProduct &&
       formData.mainCustomers.length > 0
@@ -306,6 +321,29 @@ const MenteeForm1 = ({ onNext }: MenteeForm1Props) => {
                 onValueChange={field.onChange}
                 unit="만원"
               />
+            )}
+          />
+
+          <Controller
+            name="phoneNumber"
+            control={control}
+            rules={{ required: "전화번호를 입력해주세요" }}
+            render={({ field }) => (
+              <Field.Root>
+                <Field.Label className="text-lg font-bold text-[#262626] leading-[26px] mb-1">
+                  전화번호
+                </Field.Label>
+                <TextInput
+                  placeholder="예: 010-1234-5678"
+                  {...field}
+                  className="w-full h-10 px-4 border border-[#E1E1E1] rounded-lg mt-4"
+                />
+                {errors.phoneNumber && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.phoneNumber.message}
+                  </p>
+                )}
+              </Field.Root>
             )}
           />
 

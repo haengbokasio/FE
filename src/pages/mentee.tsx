@@ -14,6 +14,7 @@ import {
   MyPageResponse,
   ConnectedMentorList,
 } from "@/services/api";
+import { useRouter } from "next/router";
 
 // 난수 생성 함수
 const generateRandomNumber = () => Math.floor(Math.random() * 9000) + 1000;
@@ -74,6 +75,7 @@ const mentors: Mentor[] = [
 const FILTERS = ["1인 사장님", "관광지 사장님", "도민픽 사장님"] as const;
 
 export default function MenteeHome() {
+  const router = useRouter();
   const [showHeroModal, setShowHeroModal] = useState(false);
   const [activeTab, setActiveTab] = useState("recommendation");
   const [selectedFilter, setSelectedFilter] =
@@ -255,13 +257,13 @@ export default function MenteeHome() {
             {/* <TabsList className="h-[56px] pt-4 px-4 flex justify-start gap-0 bg-transparent">
               <TabsTrigger
                 value="recommendation"
-                className="w-[52px] h-[46px] text-[18px] rounded-none bg-transparent shadow-none text-gray-500 data-[state=active]:text-black border-b-2 border-transparent data-[state=active]:border-black focus-visible:outline-none focus-visible:ring-0"
+                className="w-[52px] h-[46px] text-[18px] rounded-none bg-transparent shadow-none text-gray-500 data-[state=active]:text-black border-b-2 border-transparent data-[state=active]:border-black"
               >
                 추천
               </TabsTrigger>
               <TabsTrigger
                 value="list"
-                className="w-[52px] h-[46px] text-[18px] rounded-none bg-transparent shadow-none text-gray-500 data-[state=active]:text-black border-b-2 border-transparent data-[state=active]:border-black focus-visible:outline-none focus-visible:ring-0"
+                className="w-[52px] h-[46px] text-[18px] rounded-none bg-transparent shadow-none text-gray-500 data-[state=active]:text-black border-b-2 border-transparent data-[state=active]:border-black"
               >
                 목록
               </TabsTrigger>
@@ -272,7 +274,7 @@ export default function MenteeHome() {
               <div className="p-4 space-y-[16px]">
                 {/* 배너 */}
                 <div
-                  className="relative w-[343px] h-[94px] mx-auto rounded-[20px] overflow-hidden shadow-[0_20px_40px_-24px_rgba(0,0,0,0.25)] cursor-pointer"
+                  className="relative w-[343px] h-[94px] mx-auto rounded-[20px] overflow-hidden shadow cursor-pointer"
                   onClick={() => setShowHeroModal(true)}
                 >
                   <img
@@ -292,14 +294,12 @@ export default function MenteeHome() {
                 </div>
 
                 {/* AI 분석 카드 */}
-                <section className="w-[343px] mx-auto rounded-[16px] bg-white shadow-[0_0_18px_11px_rgba(0,0,0,0.05)] py-8 px-2">
+                <section className="w-[343px] mx-auto rounded-[16px] bg-white shadow py-8 px-2">
                   <div className="flex flex-col gap-4 px-4">
-                    {/* 라벨 */}
                     <div className="inline-flex h-[23px] items-center px-[10px] rounded-full bg-[rgba(135,116,255,0.18)] text-[#8774FF] text-[12px] font-medium w-fit">
                       ai 분석
                     </div>
 
-                    {/* 제목 + 설명 */}
                     <div className="flex flex-col gap-1">
                       <h2 className="text-[20px] leading-[28px] font-semibold text-black">
                         온라인 홍보 경험이 부족해요!
@@ -310,7 +310,6 @@ export default function MenteeHome() {
                       </p>
                     </div>
 
-                    {/* Ai기반 멘토 추천 */}
                     <div className="flex flex-col gap-3 pt-1">
                       <div className="flex items-center gap-2">
                         <span className="text-[14px] leading-5 font-semibold">
@@ -341,7 +340,7 @@ export default function MenteeHome() {
                   </div>
                 </section>
 
-                {/* 멘토링 시작 카드 */}
+                {/* 멘토 신청 현황 */}
                 <section className="w-[343px] mx-auto">
                   {applicationsLoading ? (
                     <div className="animate-pulse bg-gray-200 rounded-lg h-40 w-full" />
@@ -358,7 +357,6 @@ export default function MenteeHome() {
             {/* ===== 목록 탭 ===== */}
             <TabsContent value="list">
               <div className="p-4 space-y-6">
-                {/* 필터 */}
                 <div>
                   <p className="text-[18px] text-black mb-3 text-left">필터</p>
                   <div className="flex gap-2">
@@ -383,12 +381,10 @@ export default function MenteeHome() {
                   </div>
                 </div>
 
-                {/* 섹션 타이틀 */}
-                <h2 className="text-[16px] leading-[28px] font-bold text-left">
+                <h2 className="text-[16px] font-bold text-left">
                   {selectedFilter}을 소개해드릴게요!
                 </h2>
 
-                {/* 리스트 */}
                 <ul className="flex flex-col gap-6">
                   {filtered.map((m) => (
                     <li
@@ -447,13 +443,10 @@ export default function MenteeHome() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              {/* 반투명 배경 */}
               <div
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"
                 onClick={() => setShowHeroModal(false)}
               />
-
-              {/* 중앙 카드 */}
               <motion.div
                 role="dialog"
                 aria-modal="true"
@@ -469,21 +462,19 @@ export default function MenteeHome() {
                     alt="스타 배너"
                     width={329}
                     height={452}
-                    className="rounded-2xl shadow-[0_24px_64px_-24px_rgba(0,0,0,0.35)]"
+                    className="rounded-2xl shadow"
                   />
 
-                  {/* 닫기 버튼 */}
                   <button
                     aria-label="닫기"
                     onClick={() => setShowHeroModal(false)}
-                    className="absolute top-7 right-4 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+                    className="absolute top-7 right-4 z-20 inline-flex h-8 w-8 items-center justify-center rounded-full text-black"
                   >
                     ✕
                   </button>
 
-                  {/* 상단 배지 */}
                   <div className="absolute top-10 left-8 z-10">
-                    <div className="px-4 h-7 inline-flex items-center rounded-full bg-[#7B6BFF] text-white text-[12px] font-semibold shadow-[0_12px_24px_-10px_rgba(0,0,0,0.45)]">
+                    <div className="px-4 h-7 inline-flex items-center rounded-full bg-[#7B6BFF] text-white text-[12px] font-semibold shadow">
                       AI 분석
                     </div>
                   </div>
