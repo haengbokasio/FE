@@ -131,6 +131,28 @@ export interface ConnectedMenti {
 
 export type ConnectedMentiList = ConnectedMenti[];
 
+// 월 평균 매출 순 멘티 리스트 응답 타입
+export interface MentiOrderByMonthAvg {
+  id: number;
+  kakaoId: number;
+  phoneNumber: string;
+  businessType: string;
+  businessDetail: string;
+  businessAddress: string;
+  mainProductService: string;
+  operationMethod: string;
+  supplySource: string;
+  operationPeriod: number;
+  monthAvgRevenue: number;
+  weekAvgDailyRevenue: number;
+  targetCustomer: string;
+  customerAcquisitionMethod: string;
+  marketingMethod: string;
+  aiAnalysis: string;
+}
+
+export type MentiOrderByMonthAvgList = MentiOrderByMonthAvg[];
+
 // 매칭 생성 요청 타입
 export interface CreateMatchingRequest {
   mentorKakaoId: number;

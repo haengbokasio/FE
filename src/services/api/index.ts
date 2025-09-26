@@ -13,6 +13,8 @@ export type {
   ConnectedMentorList,
   ConnectedMenti,
   ConnectedMentiList,
+  MentiOrderByMonthAvg,
+  MentiOrderByMonthAvgList,
   CreateMatchingRequest,
   ApproveMatchingRequest,
   RejectMatchingRequest,
@@ -39,6 +41,9 @@ export { haengbokasioApi } from "./haengbokasio";
 // // 멘토 기준: 연결된 멘티 리스트 조회
 // const mentorKakaoId = 789012;
 // const mentis: ConnectedMentiList = await haengbokasioApi.getConnectedMentis(mentorKakaoId);
+//
+// // 월 평균 매출 순 멘티 리스트 조회
+// const mentisOrderByRevenue: MentiOrderByMonthAvgList = await haengbokasioApi.getMentisOrderByMonthAvg();
 //
 // // 매칭 생성 (멘토와 멘티 연결)
 // try {

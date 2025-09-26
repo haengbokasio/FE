@@ -7,6 +7,7 @@ import type {
   MentorRegisterResponse,
   ConnectedMentorList,
   ConnectedMentiList,
+  MentiOrderByMonthAvgList,
   CreateMatchingRequest,
   ApproveMatchingRequest,
   RejectMatchingRequest,
@@ -58,9 +59,18 @@ export const haengbokasioApi = {
    * GET /matching/mento/{menti_kakaoId}
    */
   getConnectedMentors: async (
-    mentiKakaoId: number
+    mentiKakaoId: number,
+    status?: string[]
   ): Promise<ConnectedMentorList> => {
-    return apiUtils.get<ConnectedMentorList>(`/matching/mento/${mentiKakaoId}`);
+    const params = new URLSearchParams();
+    if (status && status.length > 0) {
+      status.forEach((s) => params.append("status", s));
+    }
+
+    const queryString = params.toString();
+    const url = `/matching/mento/${mentiKakaoId}${queryString ? `?${queryString}` : ""}`;
+
+    return apiUtils.get<ConnectedMentorList>(url);
   },
 
   /**
@@ -119,6 +129,16 @@ export const haengbokasioApi = {
     };
 
     await apiUtils.put<void>("/matching/reject", requestData);
+  },
+
+  /**
+   * 월 평균 매출 순 멘티 리스트 조회
+   * GET /users/mentisOrderByMonthAvg
+   */
+  getMentisOrderByMonthAvg: async (): Promise<MentiOrderByMonthAvgList> => {
+    return apiUtils.get<MentiOrderByMonthAvgList>(
+      "/users/mentisOrderByMonthAvg"
+    );
   },
 
   /**
