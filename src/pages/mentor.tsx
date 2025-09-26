@@ -5,8 +5,8 @@ import { useRouter } from "next/router"
 import { AppHeader } from "@/components/app-header"
 import { ExpandableMainCard } from "@/components/expandable-main-card"
 import { UpcomingMentoringCard } from "@/components/upcoming-mentoring-card"
-import { MentorWaitingCard } from "@/components/mentor-waiting-card"
-import { MentorProfileCard } from "@/components/mentor-profile-card"
+import { MentoWaitingCard } from "@/components/mento-waiting-card"
+import { MentoProfileCard } from "@/components/mento-profile-card"
 import { Badge, Button } from "@vapor-ui/core"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card" // ✅ shadcn
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,7 +19,7 @@ import { ConnectedMenti } from "@/services/api/types"
 
 // 더미 데이터는 API 연동으로 교체됨
 
-export default function MentorHome() {
+export default function MentoHome() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("recommendation")
   const [showHeroModal, setShowHeroModal] = useState(false)
@@ -28,12 +28,12 @@ export default function MentorHome() {
   const [error, setError] = useState<string | null>(null)
 
   // 현재 로그인된 멘토의 kakaoId 가져오기
-  const mentorKakaoId = typeof window !== "undefined" ? Number(localStorage.getItem("kakaoId")) : null
+  const mentoKakaoId = typeof window !== "undefined" ? Number(localStorage.getItem("kakaoId")) : null
 
   // 연결된 멘티 리스트 가져오기
   useEffect(() => {
     const fetchConnectedMentis = async () => {
-      if (!mentorKakaoId) {
+      if (!mentoKakaoId) {
         setError("로그인 정보가 없습니다.")
         setLoading(false)
         return
@@ -41,7 +41,7 @@ export default function MentorHome() {
 
       try {
         setLoading(true)
-        const mentis = await haengbokasioApi.getConnectedMentis(mentorKakaoId)
+        const mentis = await haengbokasioApi.getConnectedMentis(mentoKakaoId)
         setConnectedMentis(mentis)
         setError(null)
       } catch (err) {
@@ -59,14 +59,14 @@ export default function MentorHome() {
   }, []) // 의존성 배열을 빈 배열로 변경
 
   const handleAccept = async (mentiKakaoId: number) => {
-    if (!mentorKakaoId) {
+    if (!mentoKakaoId) {
       alert("로그인 정보가 없습니다.")
       return
     }
 
     try {
-      await haengbokasioApi.approveMatching(mentorKakaoId, mentiKakaoId)
-      console.log("[mentor] Accept mentee:", mentiKakaoId)
+      await haengbokasioApi.approveMatching(mentoKakaoId, mentiKakaoId)
+      console.log("[mento] Accept menti:", mentiKakaoId)
       alert("멘토링 요청을 승인했습니다!")
       
       // 리스트에서 제거
@@ -78,14 +78,14 @@ export default function MentorHome() {
   }
 
   const handleReject = async (mentiKakaoId: number) => {
-    if (!mentorKakaoId) {
+    if (!mentoKakaoId) {
       alert("로그인 정보가 없습니다.")
       return
     }
 
     try {
-      await haengbokasioApi.rejectMatching(mentorKakaoId, mentiKakaoId)
-      console.log("[mentor] Reject mentee:", mentiKakaoId)
+      await haengbokasioApi.rejectMatching(mentoKakaoId, mentiKakaoId)
+      console.log("[mento] Reject menti:", mentiKakaoId)
       alert("멘토링 요청을 거절했습니다.")
       
       // 리스트에서 제거
@@ -190,7 +190,7 @@ export default function MentorHome() {
             ) : (
               <div className="space-y-4">
                 {/* {mentors.map((m) => (
-                  <MentorProfileCard
+                  <MentoProfileCard
                     key={m.id}
                     name={m.name}
                     job={m.job}
@@ -261,7 +261,8 @@ export default function MentorHome() {
                   {/* 중간 큰 제목 */}
                   <div className="absolute top-20 left-8 z-10 w-[260px]">
                     <h2 className="text-[28px] font-bold leading-[34px] text-black break-words text-left">
-                      실전 가능한 온라인 홍보 노하우
+                      # 실전 가능한
+                      # 온라인 홍보 노하우
                     </h2>
                   </div>
                 
@@ -279,7 +280,7 @@ export default function MentorHome() {
                       className="absolute inset-0 rounded-[inherit] bg-[#7B6BFF] opacity-40"
                     />
                     <span className="relative z-10 text-black">
-                      호기심이 많아 새로운 시도를 즐기나요?
+                      항상 도전적인 자세를 가지고 있나요?
                     </span>
                   </Badge>
                   <Badge
@@ -307,7 +308,7 @@ export default function MentorHome() {
                       className="absolute inset-0 rounded-[inherit] bg-[#7B6BFF] opacity-40"
                     />
                     <span className="relative z-10 text-black">
-                      호기심이 많아 새로운 시도를 즐기나요?
+                      최신 트렌드에 관심이 있나요?
                     </span>
                   </Badge>
                 </div>
