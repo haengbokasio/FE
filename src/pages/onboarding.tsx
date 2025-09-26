@@ -40,17 +40,17 @@ export default function OnboardingPage() {
       // kakaoId를 로컬스토리지에 저장
       localStorage.setItem("kakaoId", response.kakaoId.toString());
 
-      setCurrentStep("mentor-2");
+      // 역할에 따라 다음 단계 설정
+      if (data.role === "멘토") {
+        localStorage.setItem("role", "mentor");
+        setCurrentStep("mentor-1");
+      } else if (data.role === "멘티") {
+        localStorage.setItem("role", "mentee");
+        setCurrentStep("mentee-1");
+      }
     } catch (error) {
       console.error("로그인 생성 실패:", error);
-      // 에러 처리 - 필요시 사용자에게 알림
-    }
-    if (data.role === "멘토") {
-      localStorage.setItem("role", "mentor");
-      setCurrentStep("mentor-1");
-    } else if (data.role === "멘티") {
-      localStorage.setItem("role", "mentee");
-      setCurrentStep("mentee-1");
+      alert("로그인 생성에 실패했습니다. 다시 시도해주세요.");
     }
   };
 

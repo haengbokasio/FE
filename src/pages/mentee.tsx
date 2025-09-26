@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { AppHeader } from "@/components/app-header";
 import { Button, Badge } from "@vapor-ui/core";
 import { ProfileBadge } from "@/components/profile/ProfileBadge";
@@ -9,6 +10,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 import { createMatching } from "@/lib/api";
 import { MentorApplicationList } from "@/components/mentor-application-list";
+import { haengbokasioApi } from "@/services/api";
+import { ConnectedMentor, MyPageResponse } from "@/services/api/types";
 
 const aiCandidates = [
   { id: "1", name: "윤수민", desc: "카페 · 애월읍", img: "/korean-woman-cafe-owner.jpg" },
@@ -26,26 +29,82 @@ type Mentor = {
   kakaoId: number;
 };
 
-// 더미 데이터 (kakaoId 포함)
-const mentors: Mentor[] = [
-  { id: "m1", name: "크림커피 #08", subtitle: "애월읍 · N년차", avatar: "/korean-man-cafe-owner.jpg", tag: "1인 사장님", kakaoId: 101 },
-  { id: "m2", name: "커피 #08", subtitle: "카페 · 제주시", avatar: "/korean-man-cafe-owner.jpg", tag: "관광지 사장님", kakaoId: 102 },
-  { id: "m3", name: "라떼 #12", subtitle: "식당 · 한림읍", avatar: "/korean-woman-business-owner.jpg", tag: "1인 사장님", kakaoId: 103 },
-  { id: "m4", name: "크림커피 #08", subtitle: "식당 · 한림읍", avatar: "/korean-woman-business-owner.jpg", tag: "도민픽 사장님", kakaoId: 104 },
-  { id: "m5", name: "크림커피 #08", subtitle: "식당 · 한림읍", avatar: "/korean-woman-business-owner.jpg", tag: "1인 사장님", kakaoId: 105 },
-];
+// 더미 데이터는 API 연동으로 교체됨
 
 const FILTERS = ["1인 사장님", "관광지 사장님", "도민픽 사장님"] as const;
 
 export default function MenteeHome() {
+  const router = useRouter();
   const [showHeroModal, setShowHeroModal] = useState(false);
   const [activeTab, setActiveTab] = useState("recommendation");
   const [selectedFilter, setSelectedFilter] = useState<(typeof FILTERS)[number]>("1인 사장님");
+  const [connectedMentors, setConnectedMentors] = useState<ConnectedMentor[]>([]);
+  const [myPageData, setMyPageData] = useState<MyPageResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const filtered = useMemo(() => mentors.filter((m) => m.tag === selectedFilter), [selectedFilter]);
+  const filtered = useMemo(() => connectedMentors.filter((m) => {
+    // API 데이터에서 tag 정보가 없으므로 businessType으로 필터링
+    const businessType = m.businessType;
+    if (selectedFilter === "1인 사장님") {
+      return businessType === "서비스업" || businessType === "소매업";
+    } else if (selectedFilter === "관광지 사장님") {
+      return businessType === "숙박업" || businessType === "음식업";
+    } else if (selectedFilter === "도민픽 사장님") {
+      return businessType === "음식업";
+    }
+    return true;
+  }), [connectedMentors, selectedFilter]);
 
   // 로컬스토리지에서 현재 로그인된 멘티 kakaoId 불러오기
   const mentiKakaoId = typeof window !== "undefined" ? Number(localStorage.getItem("kakaoId")) : null;
+
+  // 연결된 멘토 리스트와 마이페이지 데이터 가져오기
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!mentiKakaoId) {
+        setError("로그인 정보가 없습니다.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        
+        // 멘티가 등록되었는지 확인하기 위해 getMyPage 먼저 호출
+        try {
+          const myPage = await haengbokasioApi.getMyPage(mentiKakaoId.toString());
+          setMyPageData(myPage);
+          
+          // 마이페이지 데이터가 있으면 연결된 멘토 리스트도 가져오기
+          try {
+            const mentors = await haengbokasioApi.getConnectedMentors(mentiKakaoId);
+            setConnectedMentors(mentors);
+          } catch (mentorErr) {
+            console.warn("연결된 멘토 리스트 조회 실패:", mentorErr);
+            // 멘토 리스트 조회 실패는 에러로 처리하지 않음 (아직 연결된 멘토가 없을 수 있음)
+            setConnectedMentors([]);
+          }
+          
+          setError(null);
+        } catch (myPageErr) {
+          console.warn("마이페이지 조회 실패:", myPageErr);
+          // 멘티가 아직 등록되지 않았을 수 있음
+          setMyPageData(null);
+          setConnectedMentors([]);
+          setError("멘티 등록이 필요합니다. 온보딩을 완료해주세요.");
+        }
+      } catch (err) {
+        console.error("데이터 조회 실패:", err);
+        setError("데이터를 불러오는데 실패했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // 컴포넌트 마운트 시에만 실행
+    fetchData();
+  }, []); // 의존성 배열을 빈 배열로 변경
 
   return (
     <div className="min-h-screen w-full flex justify-center bg-neutral-100">
@@ -100,8 +159,18 @@ export default function MenteeHome() {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                      <h2 className="text-[20px] font-semibold text-black">온라인 홍보 경험이 부족해요!</h2>
-                      <p className="text-[12px] text-[#767676]">현재 SNS 채널을 꾸준히 운영하거나 콘텐츠를 제작한 경험이 적어요</p>
+                      <h2 className="text-[20px] font-semibold text-black">
+                        {myPageData?.aiAnalysis ? 
+                          JSON.parse(myPageData.aiAnalysis).topStrengthCopy || "AI 분석 결과를 불러오는 중..." :
+                          "AI 분석 결과를 불러오는 중..."
+                        }
+                      </h2>
+                      <p className="text-[12px] text-[#767676]">
+                        {myPageData?.aiAnalysis ? 
+                          JSON.parse(myPageData.aiAnalysis).coachingPoints?.[0] || "분석 중..." :
+                          "분석 중..."
+                        }
+                      </p>
                     </div>
 
                     <div className="flex flex-col gap-3 pt-1">
@@ -119,13 +188,31 @@ export default function MenteeHome() {
 
                 {/* 멘토 신청 현황 */}
                 <section className="w-[343px] mx-auto">
-                  <MentorApplicationList
-                    applications={[
-                      { id: "1", name: "윤수민", job: "카페 · 애월읍", avatar: "/korean-woman-cafe-owner.jpg", status: "waiting" },
-                      { id: "2", name: "윤수민", job: "카페 · 애월읍", avatar: "/korean-man-cafe-owner.jpg", status: "completed" },
-                      { id: "3", name: "윤수민", job: "카페 · 애월읍", avatar: "/korean-woman-business-owner.jpg", status: "rejected" },
-                    ]}
-                  />
+                  {loading ? (
+                    <div className="text-center py-4 text-gray-500">로딩 중...</div>
+                  ) : error ? (
+                    <div className="text-center py-4">
+                      <div className="text-red-500 mb-4">{error}</div>
+                      <Button
+                        onClick={() => router.push('/onboarding')}
+                        className="bg-[#FF782A] hover:bg-[#FF782A]/90 text-white px-4 py-2 rounded-lg"
+                      >
+                        온보딩 완료하기
+                      </Button>
+                    </div>
+                  ) : connectedMentors.length === 0 ? (
+                    <div className="text-center py-4 text-gray-500">신청한 멘토가 없습니다.</div>
+                  ) : (
+                    <MentorApplicationList
+                      applications={connectedMentors.map((mentor, index) => ({
+                        id: mentor.kakaoId.toString(),
+                        name: `멘토 #${mentor.kakaoId}`,
+                        job: `${mentor.businessType} · ${mentor.operationPeriod}년차`,
+                        avatar: "/korean-man-cafe-owner.jpg", // 기본 아바타 사용
+                        status: "waiting" as const, // API에서 상태 정보가 없으므로 기본값 사용
+                      }))}
+                    />
+                  )}
                 </section>
               </div>
             </TabsContent>
@@ -157,40 +244,48 @@ export default function MenteeHome() {
                 <h2 className="text-[16px] font-bold text-left">{selectedFilter}을 소개해드릴게요!</h2>
 
                 <ul className="flex flex-col gap-6">
-                  {filtered.map((m) => (
-                    <li key={m.id} className="flex items-center justify-between gap-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-[48px] h-[48px] rounded-full overflow-hidden bg-neutral-200 shrink-0">
-                          <img src={m.avatar} alt={m.name} className="w-full h-full object-cover" />
+                  {loading ? (
+                    <div className="text-center py-4 text-gray-500">로딩 중...</div>
+                  ) : error ? (
+                    <div className="text-center py-4 text-red-500">{error}</div>
+                  ) : filtered.length === 0 ? (
+                    <div className="text-center py-4 text-gray-500">해당 카테고리의 멘토가 없습니다.</div>
+                  ) : (
+                    filtered.map((m) => (
+                      <li key={m.kakaoId} className="flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-[48px] h-[48px] rounded-full overflow-hidden bg-neutral-200 shrink-0">
+                            <img src="/korean-man-cafe-owner.jpg" alt={`멘토 #${m.kakaoId}`} className="w-full h-full object-cover" />
+                          </div>
+                          <div className="flex flex-col text-left">
+                            <p className="text-[18px] font-semibold">멘토 #{m.kakaoId}</p>
+                            <p className="text-[14px] text-black/70">{m.businessType} · {m.operationPeriod}년차</p>
+                          </div>
                         </div>
-                        <div className="flex flex-col text-left">
-                          <p className="text-[18px] font-semibold">{m.name}</p>
-                          <p className="text-[14px] text-black/70">{m.subtitle}</p>
-                        </div>
-                      </div>
 
-                      {/* 신청 버튼 */}
-                      <button
-                        onClick={async () => {
-                          if (!mentiKakaoId) {
-                            alert("로그인 정보가 없습니다. 다시 로그인 해주세요.");
-                            return;
-                          }
-                          try {
-                            const data = await createMatching(m.kakaoId, mentiKakaoId);
-                            console.log("매칭 성공:", data);
-                            alert("신청 완료!");
-                          } catch (err) {
-                            console.error("매칭 실패:", err);
-                            alert("신청에 실패했습니다.");
-                          }
-                        }}
-                        className="px-3 py-1 rounded-lg bg-[#FFF2EA] border border-[#FFD5BD] text-[#FF782A] text-sm"
-                      >
-                        신청하기
-                      </button>
-                    </li>
-                  ))}
+                        {/* 신청 버튼 */}
+                        <button
+                          onClick={async () => {
+                            if (!mentiKakaoId) {
+                              alert("로그인 정보가 없습니다. 다시 로그인 해주세요.");
+                              return;
+                            }
+                            try {
+                              const data = await createMatching(m.kakaoId, mentiKakaoId);
+                              console.log("매칭 성공:", data);
+                              alert("신청 완료!");
+                            } catch (err) {
+                              console.error("매칭 실패:", err);
+                              alert("신청에 실패했습니다.");
+                            }
+                          }}
+                          className="px-3 py-1 rounded-lg bg-[#FFF2EA] border border-[#FFD5BD] text-[#FF782A] text-sm"
+                        >
+                          신청하기
+                        </button>
+                      </li>
+                    ))
+                  )}
                 </ul>
               </div>
             </TabsContent>
