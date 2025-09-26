@@ -65,10 +65,10 @@ const MentorForm2 = ({ onNext, onBack }: MentorForm2Props) => {
       body: JSON.stringify(formData),
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "분석 요청에 실패했습니다.");
-    }
+    // if (!response.ok) {
+    //   const errorData = await response.json();
+    //   throw new Error(errorData.error || "분석 요청에 실패했습니다.");
+    // }
 
     return response.json();
   };
@@ -149,9 +149,9 @@ const MentorForm2 = ({ onNext, onBack }: MentorForm2Props) => {
             weekAvgDailyRevenue: formDataWithPhone.salesAvg,
             targetCustomer: formDataWithPhone.mainCustomers?.join(", ") || "",
             customerAcquisitionMethod: "", // 멘토 폼에는 없는 필드이므로 빈 문자열
-            marketingMethod:
-              formDataWithPhone.marketingMethod?.join(", ") || "",
-            aiAnalysis: JSON.stringify(result), // AI 분석 결과를 문자열로 변환
+            marketingMethod: formDataWithPhone.marketingMethod?.join(", ") || "",
+            aiAnalysis: JSON.stringify(result),
+            kakaoId: 0
           };
 
           console.log("🚀 멘토 등록 요청 데이터:", {

@@ -50,6 +50,7 @@ export interface MentiRegisterResponse {
 
 // 멘토 등록 요청 타입 (body에 실어보낼 데이터) - kakaoId는 path parameter로 제거
 export interface MentorRegisterRequest {
+  kakaoId: number;
   phoneNumber: string;
   businessType: string;
   businessDetail: string;
@@ -63,7 +64,7 @@ export interface MentorRegisterRequest {
   targetCustomer: string;
   customerAcquisitionMethod: string;
   marketingMethod: string;
-  aiAnalysis: string; // 서버는 문자열을 기대하는 것 같음
+  aiAnalysis: string;
 }
 
 // 멘토 등록 응답 타입
