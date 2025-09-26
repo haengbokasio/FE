@@ -279,7 +279,7 @@ export default function MentorHome() {
                   {/* 중간 큰 제목 */}
                   <div className="absolute top-20 left-8 z-10 w-[260px]">
                     <h2 className="text-[28px] font-bold leading-[34px] text-black break-words text-left">
-                      실전 가능한 온라인 홍보 노하우
+                      # 실전 가능한 # 온라인 홍보 노하우
                     </h2>
                   </div>
 
